@@ -9,10 +9,10 @@ app.config['DEBUG'] = True
 def index():
     return render_template("index.html")
 
-@app.route("/welcome", methods=['POST'])
+@app.route("/welcome",)
 def welcome():
-    username = request.form['username']
-    return render_template('welcome.html', name=username)
+    name = request.args.get('name')
+    return render_template('welcome.html', name=name)
 
 def valid_text_length(text):
     if len(text) > 3 and len(text) < 20:
@@ -27,7 +27,7 @@ def no_spaces(text):
         return True
 
 def verify_pw(pw, verify):
-    if pw == verify:
+    if verify == pw:
         return True
     else:
         return False    
@@ -50,20 +50,32 @@ def validate_info():
     pw_error = ''
     verify_error = ''
     email_error = ''
+    spider_man = True
 
-    if valid_text_length(username) == False and no_spaces(username) == False:
+    if valid_text_length(username) == False or no_spaces(username) == False:
         username_error = "That's not a valid username"
-    if valid_text_length(password) == False and no_spaces(password) == False:
+        spider_man = False
+    if valid_text_length(password) == False or no_spaces(password) == False:
         pw_error= "That's not a valid password"
-        password=''
+        spider_man = False
     if verify_pw(password, verify_pass) == False:
         verify_error="Passwords dont't match"
-        verify_pass=''
-    if verify_email(email) == False:
-        email_error = "That's not a valid email"
-        
+        spider_man = False
+    if not email == '':
+        if verify_email(email) == False:
+            email_error = "That's not a valid email"
+            spider_man = False
 
 
+    if spider_man == True:
+        name = username
+        return redirect("/welcome?name={0}".format(name))    
+    else:
+        return render_template('index.html', username=username,
+        username_error=username_error,
+        pw_error=pw_error,
+        verify_error=verify_error,
+        email_error=email_error,email=email)
 
 
 

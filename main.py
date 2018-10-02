@@ -7,12 +7,12 @@ app.config['DEBUG'] = True
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", title="Signup")
 
 @app.route("/welcome",)
 def welcome():
     name = request.args.get('name')
-    return render_template('welcome.html', name=name)
+    return render_template('welcome.html', name=name, title="Welcome")
 
 def valid_text_length(text):
     if len(text) > 3 and len(text) < 20:
